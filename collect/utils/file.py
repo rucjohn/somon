@@ -3,10 +3,6 @@
 import os
 
 
-def gen_code(data):
-
-
-
 def getsize(path, suffix=None):
     size = 0
     if not os.path.exists(path):
@@ -21,5 +17,7 @@ def getsize(path, suffix=None):
     if os.path.isfile(path):
         size = os.path.getsize(path)
     return size
+
+
 
 

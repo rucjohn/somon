@@ -10,7 +10,7 @@ import subprocess
 def collect(task):
     logging.info(u"启动scheduler: Collect")
     basedir = os.path.dirname(os.path.abspath(__file__))
-    collect_dir = os.path.join(base_dir, 'collect')
+    collect_dir = os.path.join(basedir, 'collect')
     try:
         os.chdir(collect_dir)
     except OSError:
