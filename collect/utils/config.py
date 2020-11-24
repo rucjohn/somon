@@ -16,3 +16,7 @@ cf.read(path)
 
 # cache
 CACHE_DIR = cf.get('cache', 'cache_dir')
+
+# log
+LOG_DIR = cf.get('log', 'log_dir')
+LOG_VERBOSE = cf.get('log', 'verbose')
