@@ -22,3 +22,7 @@ def collect(task):
     cmd = r'c:\salt\bin\python.exe main.py {0}'.format(task)
     subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return True
+
+
+def t_collect():
+    return "collect task"
