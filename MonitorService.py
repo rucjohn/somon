@@ -10,6 +10,8 @@ import win32service
 import win32serviceutil
 import servicemanager
 
+import monitor
+
 
 class SoMonService(win32serviceutil.ServiceFramework):
 
@@ -24,7 +26,7 @@ class SoMonService(win32serviceutil.ServiceFramework):
 
     def SvcDoRun(self):
         while self.isAlive:
-            time.sleep(5)
+            monitor.collect()
 
     def SvcStop(self):
         self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)

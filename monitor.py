@@ -7,7 +7,7 @@ import logging
 import subprocess
 
 
-def collect(task):
+def collect():
     logging.info(u"启动scheduler: Collect")
     basedir = os.path.dirname(os.path.abspath(__file__))
     collect_dir = os.path.join(basedir, 'collect')
