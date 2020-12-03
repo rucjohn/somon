@@ -3,7 +3,7 @@
 import os
 import sys
 import logging
-from collect.utils import file, common, config, process, logger
+from collector.utils import file, common, config, process, logger
 
 log = logger.get_logger('collect')
 
