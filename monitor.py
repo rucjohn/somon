@@ -5,9 +5,34 @@ import sys
 import platform
 import logging
 import subprocess
+import threading
+
+
+class Collect(object):
+
+    def __init__(self):
+        self.threads = []
+
+    def add(self, func, name, *args, **kwargs):
+        thread = threading.Thread(target=func, name=name, args=args, kwargs=kwargs)
+        self.threads.append(thread)
+
+    def start(self):
+        for thread in self.threads:
+            thread.start()
+
+    def wait(self):
+        for thread in self.threads:
+            thread.join()
 
 
 def collect():
+    client = Collect()
+    client.start()
+    client.wait()
+
+
+def collectA():
     logging.info(u"启动scheduler: Collect")
     basedir = os.path.dirname(os.path.abspath(__file__))
     collect_dir = os.path.join(basedir, 'collect')
