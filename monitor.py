@@ -7,6 +7,9 @@ import logging
 import subprocess
 import threading
 
+from collector.cron import crond
+from collector.listener import cache, keyboard, mouse
+
 
 class Collect(object):
 
@@ -27,9 +30,18 @@ class Collect(object):
 
 
 def collect():
-    client = Collect()
-    client.start()
-    client.wait()
+    app = Collect()
+    # 添加定时任务
+    app.add(crond.run, 'Cron')
+    # 添加缓存监听器
+    app.add(cache.run, 'Listener-cache')
+    # 添加键盘监听器
+    app.add(keyboard.run, 'Listener-keyboard')
+    # 添加鼠标监听器
+    app.add(mouse.run, 'Listener-mouse')
+    # 启动
+    app.start()
+    app.wait()
 
 
 def collectA():
