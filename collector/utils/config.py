@@ -20,3 +20,6 @@ CACHE_DIR = cf.get('cache', 'cache_dir')
 # log
 LOG_DIR = cf.get('log', 'log_dir')
 LOG_VERBOSE = cf.get('log', 'verbose')
+
+# db
+DB_NAME = cf.get('db', 'name')
