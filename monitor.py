@@ -26,7 +26,9 @@ class Collect(object):
     def start(self):
         for thread in self.threads:
             # 随机休眠，避免同一时间触发所有任务
-            time.sleep(random.randint(1, 30))
+            _ = random.randint(1, 30)
+            print("随机休眠: {}".format(_))
+            time.sleep(_)
             thread.start()
 
     def wait(self):
