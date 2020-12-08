@@ -1,6 +1,7 @@
 # _*_ coding:utf-8 _*_
 
 import os
+import win32api
 import win32ui
 import win32gui
 
