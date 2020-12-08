@@ -2,17 +2,23 @@
 
 import os
 import json
+import time
 import winreg
-import win32gui
-import win32process
-import win32con
-import win32ui
-import win32api
-import psutil
+
+from collector.utils import config
+
+TASK = 'application'
 
 HKLM = winreg.HKEY_LOCAL_MACHINE
 HKCU = winreg.HKEY_CURRENT_USER
 HKCR = winreg.HKEY_CLASSES_ROOT
+
+
+def get_cache_dir():
+    path = os.path.join(config.CACHE_DIR, TASK)
+    if not os.path.exists(path):
+        os.makedirs(path)
+    return path
 
 
 def query_reg_subkey(psdrive, key=""):
@@ -113,14 +119,33 @@ def win():
     apps.extend(query(HKLM, x86_reg, fields))
     apps.extend(query(HKCU, x64_reg, fields))
     apps.extend(query(HKCU, x86_reg, fields))
-    result = transfer(apps=apps)
+    return apps
+
+
+def responses():
+    apps = win()
+    return apps
+
+
+def relation_responses():
+    path = os.path.join(get_cache_dir(), 'relation_responses.txt')
+    # 判断文件是否过期 > 30min
+    if os.path.exists(path):
+        mtime = int(os.stat(path).st_mtime)
+        now = int(time.time())
+        if now - mtime > 30 * 60:
+            os.remove(path)
+    if not os.path.exists(path):
+        apps = win()
+        result = transfer(apps=apps)
+        with open(path, 'w') as f:
+            f.write(json.dumps(result))
+    else:
+        with open(path, 'r') as f:
+            result = json.loads(f.read())
     return result
 
 
-def return_data():
-    pass
-
-
 if __name__ == '__main__':
-    ret = win()
+    ret = relation_responses()
     print(json.dumps(ret, indent=4))
