@@ -1,12 +1,15 @@
 # _*_ coding:utf-8 _*_
 
+import os
 import sqlite3
-from . import config
+from collector.utils import config
+
+database = os.path.join(config.CACHE_DIR, config.DB_NAME)
 
 
 class SQLiteConnection(object):
 
-    def __init__(self, name=config.DB_NAME):
+    def __init__(self, name=database):
         self.name = name
         self.conn = None
         self.cursor = None
@@ -28,7 +31,7 @@ class SQLiteConnection(object):
         self.cursor.execute(sql)
         self.conn.commit()
         row = self.cursor.fetchone()
-        return row[0]
+        return row
 
     def execute_all(self, sql):
         self.cursor.execute(sql)

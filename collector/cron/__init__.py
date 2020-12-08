@@ -13,17 +13,17 @@ init_sql = '''
            );
            '''
 
-tasks = [
-    dict(name='application', timer='*/30 * * * *', module='collector.cron.task.application'),
+lists = [
+    dict(name='application', timer='* * * * *', module='collector.cron.task.application'),
     dict(name='process', timer='* * * * *', module='collector.cron.task.process'),
     dict(name='screen', timer='* * * * *', module='collector.cron.task.screen')
 ]
 
-database = config.DB_NAME
+database = sqlite.database
 if not os.path.exists(database):
-    client = sqlite.SQLiteConnection(name=database)
+    client = sqlite.SQLiteConnection(database)
     client.execute_all(sql=init_sql)
-    for task in tasks:
+    for task in lists:
         task_name, task_timer, task_module = task['name'], task['timer'], task['module']
         sql = '''INSERT INTO JOB(name, timer, module) VALUES ('{0}', '{1}', '{2}')'''.format(
             task_name, task_timer, task_module
