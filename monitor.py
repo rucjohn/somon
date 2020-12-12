@@ -11,66 +11,46 @@ import threading
 
 from collector.cron import crond
 from collector.cron import tasks
-# from collector.listener import cache, keyboard, mouse
+from collector.listener import keyboard, mouse
 
 
 class Collect(object):
 
     def __init__(self):
-        self.threads = []
+        self.threads = dict()
 
     def add(self, func, name, *args, **kwargs):
         thread = threading.Thread(target=func, name=name, args=args, kwargs=kwargs)
-        self.threads.append(thread)
+        self.threads.update({name: thread})
+        # self.threads.append((name, thread))
 
     def start(self):
-        for thread in self.threads:
+        for name, thread in self.threads.items():
             # 随机休眠，避免同一时间触发所有任务
-            _ = random.randint(1, 30)
-            print("随机休眠: {}".format(_))
+            _ = random.randint(5, 15)
+            print("{0} 随机休眠: {1}".format(name, _))
             time.sleep(_)
             thread.start()
 
     def wait(self):
-        for thread in self.threads:
+        for _, thread in self.threads.items():
             thread.join()
 
 
 def collect():
     app = Collect()
+    # 添加监听器
+    app.add(keyboard.run, 'Listener_keyboard')
+    app.add(mouse.run, 'Listener_mouse')
     # 添加定时任务
     app.add(tasks.exec_application, 'Cron_application')
     app.add(tasks.exec_process, 'Cron_process')
-    # # 添加缓存监听器
+    app.add(tasks.exec_screen, 'Cron_screen')
+    app.add(tasks.exec_count_km, 'Cron_count_keyboardmouse')
     # app.add(cache.run, 'Listener-cache')
-    # # 添加键盘监听器
-    # app.add(keyboard.run, 'Listener-keyboard')
-    # # 添加鼠标监听器
-    # app.add(mouse.run, 'Listener-mouse')
     # 启动
     app.start()
     app.wait()
-
-
-# def collectA():
-#     logging.info(u"启动scheduler: Collect")
-#     basedir = os.path.dirname(os.path.abspath(__file__))
-#     collect_dir = os.path.join(basedir, 'collect')
-#     try:
-#         os.chdir(collect_dir)
-#     except OSError:
-#         return False
-#     if not os.path.exists('main.py'):
-#         logging.info(u"调用主进程失败")
-#         return False
-#     logging.info(u"调用主进程")
-#     cmd = r'c:\salt\bin\python.exe main.py {0}'.format(task)
-#     subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-#     return True
-#
-#
-# def t_collect():
-#     return "collect task"
 
 
 if __name__ == '__main__':
