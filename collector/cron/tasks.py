@@ -4,7 +4,7 @@ import os
 import time
 from collector.cron import schedules
 from collector.utils import sqlite, config
-from collector.cron.actions import application, process
+from collector.cron.actions import application, process, screen, keyboardmouse
 
 wait = 60
 
@@ -23,7 +23,7 @@ def is_valid(task):
 
 def exec_application():
     while True:
-        task = 'application'
+        task = application.__TASK__
         if is_valid(task):
             result = application.responses()
             print(result)
@@ -32,9 +32,27 @@ def exec_application():
 
 def exec_process():
     while True:
-        task = 'process'
+        task = process.__TASK__
         if is_valid(task):
             result = process.response()
+            print(result)
+        time.sleep(wait)
+
+
+def exec_screen():
+    while True:
+        task = screen.__TASK__
+        if is_valid(task):
+            result = screen.capture()
+            print(result)
+        time.sleep(wait)
+
+
+def exec_count_km():
+    while True:
+        task = keyboardmouse.__TASK__
+        if is_valid(task):
+            result = keyboardmouse.response()
             print(result)
         time.sleep(wait)
 
