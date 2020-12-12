@@ -4,7 +4,7 @@ import os
 import time
 from collector.cron import schedules
 from collector.utils import sqlite, config
-from collector.cron.actions import application
+from collector.cron.actions import application, process
 
 wait = 60
 
@@ -30,7 +30,16 @@ def exec_application():
         time.sleep(wait)
 
 
+def exec_process():
+    while True:
+        task = 'process'
+        if is_valid(task):
+            result = process.response()
+            print(result)
+        time.sleep(wait)
+
+
 if __name__ == '__main__':
-    ret = is_valid(task='application')
+    ret = is_valid(task='process')
     print(ret)
 
