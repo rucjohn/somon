@@ -13,6 +13,17 @@ HKLM = winreg.HKEY_LOCAL_MACHINE
 HKCU = winreg.HKEY_CURRENT_USER
 HKCR = winreg.HKEY_CLASSES_ROOT
 
+CUSTOM_APPS = {
+    "python.exe": "python",
+    "explorer.exe": '文件资源管理器',
+    "notepad.exe": '记事本',
+    "Taskmgr.exe": '任务管理器',
+    "cmd.exe": "命令提示符",
+    "powershell.exe": 'Windows PowerShell',
+    "WindowsTerminal.exe": 'Windows Terminal',
+    "ctfmon.exe": 'Microsoft Office产品输入法可执行程序'
+}
+
 
 def get_cache_dir():
     path = os.path.join(config.CACHE_DIR, TASK)
@@ -64,7 +75,7 @@ def query(psdriver, reg, query_fields):
 
 def iter_dir(path, suffix=None):
     result = list()
-    f_exclude = ['setup.exe', 'uninstall.exe', 'uninst.exe', 'unins000.exe', 'liveupdate.exe']
+    f_exclude = ['setup.exe', 'uninstall.exe', 'uninst.exe', 'unins000.exe', 'liveupdate.exe', "Update.exe", "cmd.exe"]
     if suffix:
         f_suffix = '.' + suffix
     if not os.path.isdir(path):
@@ -92,10 +103,11 @@ def transfer(apps):
             continue
         if uninstall_string.lower().startswith('msiexec.exe'):
             continue
-        # if 'QQPCTray.exe' not in display_icon:
-        #     continue
         if install_location and os.path.exists(install_location):
-            location = os.path.dirname(install_location)
+            if os.path.isdir(install_location):
+                location = install_location
+            else:
+                location = os.path.dirname(install_location)
         elif display_icon:
             _icon = display_icon.split(',')[0]
             _icon = _icon.replace('"', '')
@@ -148,4 +160,7 @@ def relation_responses():
 
 if __name__ == '__main__':
     ret = relation_responses()
-    print(json.dumps(ret, indent=4))
+    # print(json.dumps(ret, indent=4))
+    # for app in ret:
+    #     if app['DisplayName'] == '百度网盘':
+    #         print(app)
