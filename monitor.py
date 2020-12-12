@@ -39,7 +39,8 @@ class Collect(object):
 def collect():
     app = Collect()
     # 添加定时任务
-    app.add(tasks.exec_application, 'Cron')
+    app.add(tasks.exec_application, 'Cron_application')
+    app.add(tasks.exec_process, 'Cron_process')
     # # 添加缓存监听器
     # app.add(cache.run, 'Listener-cache')
     # # 添加键盘监听器
