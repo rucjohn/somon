@@ -23,3 +23,7 @@ LOG_VERBOSE = cf.get('log', 'verbose')
 
 # db
 DB_NAME = cf.get('db', 'name')
+
+# screen
+SCREEN_WIDTH = cf.getint('screen', 'width')
+SCREEN_HEIGHT = cf.getint('screen', 'height')
