@@ -7,6 +7,8 @@ import win32gui
 import win32process
 from collector.cron.actions import application
 
+__TASK__ = 'PROCESS'
+
 SYSTEM_CMD_KEYWORDS = ["Embedding"]
 SYSTEM_NAME_KEYWORDS = ["System Idle Process", "host.exe", "broker.exe"]
 

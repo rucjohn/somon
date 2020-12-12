@@ -14,9 +14,10 @@ init_sql = '''
            '''
 
 lists = [
-    dict(name='application', timer='* * * * *', module='collector.cron.task.application'),
-    dict(name='process', timer='* * * * *', module='collector.cron.task.process'),
-    dict(name='screen', timer='* * * * *', module='collector.cron.task.screen')
+    dict(name='APPLICATION', timer='* * * * *', module='collector.cron.actions.application'),
+    dict(name='PROCESS', timer='* * * * *', module='collector.cron.actions.process'),
+    dict(name='SCREEN', timer='* * * * *', module='collector.cron.actions.screen'),
+    dict(name='KM', timer='* * * * *', module='collector.cron.actions.keyboardmouse')
 ]
 
 database = sqlite.database

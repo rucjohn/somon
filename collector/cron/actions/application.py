@@ -5,9 +5,9 @@ import json
 import time
 import winreg
 
-from collector.utils import config
+from collector.utils import config, common
 
-TASK = 'application'
+__TASK__ = 'APPLICATION'
 
 HKLM = winreg.HKEY_LOCAL_MACHINE
 HKCU = winreg.HKEY_CURRENT_USER
@@ -26,7 +26,7 @@ CUSTOM_APPS = {
 
 
 def get_cache_dir():
-    path = os.path.join(config.CACHE_DIR, TASK)
+    path = os.path.join(config.CACHE_DIR, __TASK__)
     if not os.path.exists(path):
         os.makedirs(path)
     return path
@@ -73,27 +73,9 @@ def query(psdriver, reg, query_fields):
     return ret
 
 
-def iter_dir(path, suffix=None):
-    result = list()
-    f_exclude = ['setup.exe', 'uninstall.exe', 'uninst.exe', 'unins000.exe', 'liveupdate.exe', "Update.exe", "cmd.exe"]
-    if suffix:
-        f_suffix = '.' + suffix
-    if not os.path.isdir(path):
-        return result
-    for root, dirs, files in os.walk(path):
-        for f in files:
-            if suffix:
-                if f.lower() in f_exclude:
-                    continue
-                if f.endswith(f_suffix):
-                    result.append(f)
-            else:
-                result.append(f)
-    return result
-
-
 def transfer(apps):
     result = list()
+    exclude = ['setup.exe', 'uninstall.exe', 'uninst.exe', 'unins000.exe', 'liveupdate.exe', "Update.exe", "cmd.exe"]
     for info in apps:
         display_name = info["DisplayName"]
         uninstall_string = info["UninstallString"]
@@ -116,7 +98,7 @@ def transfer(apps):
             _un_str = uninstall_string.split(',')[0]
             _un_str = _un_str.replace('"', ',')
             location = os.path.dirname(_un_str)
-        relation_files = iter_dir(location, suffix='exe')
+        relation_files = common.iter_dir(location, suffix='exe', exclude=exclude)
         info.update({"format": {"location": location, "relation": relation_files}})
         result.append(info)
     return result
@@ -160,7 +142,7 @@ def relation_responses():
 
 if __name__ == '__main__':
     ret = relation_responses()
-    # print(json.dumps(ret, indent=4))
+    print(json.dumps(ret, indent=4))
     # for app in ret:
     #     if app['DisplayName'] == '百度网盘':
     #         print(app)
