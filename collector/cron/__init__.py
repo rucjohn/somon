@@ -1,7 +1,7 @@
 # _*_ coding:utf-8 _*_
 
 import os
-from collector.utils import config, sqlite
+from collector.utils import sqlite
 
 init_sql = '''
            CREATE TABLE JOB(
