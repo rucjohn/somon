@@ -35,13 +35,14 @@ class SoMonService(win32serviceutil.ServiceFramework):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 1:
+    if len(sys.argv) == 1:
+        try:
+            evtsrc_dll = os.path.abspath(servicemanager.__file__)
+            servicemanager.PrepareToHostSingle(SoMonService)
+            servicemanager.Initialize('SoMonService', evtsrc_dll)
+            servicemanager.StartServiceCtrlDispatcher()
+        except win32service.error as details:
+            if details[0] == winerror.ERROR_FAILED_SERVICE_CONTROLLER_CONNECT:
+                win32serviceutil.usage()
+    else:
         win32serviceutil.HandleCommandLine(SoMonService)
-    try:
-        evt_src_dll = os.path.abspath(servicemanager.__file__)
-        servicemanager.PrepareToHostSingle(SoMonService)
-        servicemanager.Initialize('SoMonService', evt_src_dll)
-        servicemanager.StartServiceCtrlDispatcher()
-    except win32service.error as details:
-        if details[0] == winerror.ERROR_FAILED_SERVICE_CONTROLLER_CONNECT:
-            win32serviceutil.usage()
