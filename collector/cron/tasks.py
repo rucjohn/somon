@@ -3,7 +3,7 @@
 import os
 import time
 from collector.cron import schedules
-from collector.utils import sqlite, config
+from collector.utils import sqlite
 from collector.cron.actions import application, process, screen, keyboardmouse
 
 wait = 60
