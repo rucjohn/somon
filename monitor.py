@@ -4,12 +4,8 @@ import os
 import sys
 import time
 import random
-import platform
-import logging
-import subprocess
 import threading
 
-from collector.cron import crond
 from collector.cron import tasks
 from collector.listener import keyboard, mouse
 
